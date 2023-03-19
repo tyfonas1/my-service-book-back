@@ -2,7 +2,7 @@
   "name": "myservicebook",
   "version": "1.0.1",
   "description": "Service book for your car/moto and more!",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
