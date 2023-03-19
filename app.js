@@ -3,6 +3,9 @@ const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const userRoutes = require("./api/routes/user");
+const stadiumRoutes = require("./api/routes/stadiums");
+const leagueRoutes = require("./api/routes/leagues");
+const teamRoutes = require("./api/routes/teams");
 const cors = require("cors");
 mongoose.connect(
   "mongodb+srv://hnNbyq3kebWmE8MZ:hnNbyq3kebWmE8MZ@my-service-book.pfrqz.mongodb.net/MyServiceBook?retryWrites=true&w=majority"
@@ -43,6 +46,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/user", userRoutes);
+app.use("/league", leagueRoutes);
+app.use("/team", teamRoutes);
+app.use("/stadium", stadiumRoutes);
 
 app.use((req, res, next) => {
   res.status(200).json({

@@ -45,16 +45,21 @@ router.post("/login", (req, res, next) => {
           message: "User not found",
         });
       }
+      console.log("IN2");
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+        console.log('in3',result);
         if (err) {
           return res.status(401).json({ message: "Auth failed" });
         }
         if (result) {
-          return res.status(200).json({ message: "Auth successful" });
+          return res.status(200).json({ message: "Auth successful",data:user });
+        }else{
+          return res.status(404).json({ message: "Wrong username or password" });
         }
       });
+      console.log('in3');
     })
-    .catch();
+    .catch((err)=> console.log(err));
 });
 
 module.exports = router;
