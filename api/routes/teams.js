@@ -6,6 +6,7 @@ const validateStadium = require("../middleware/validateStadium");
 const Team = require("../models/team");
 const Leagues = require("../models/league");
 const Stadium = require("../models/stadium");
+const Day = require("../models/days");
 
 router.get("/", async (req, res, next) => {
   const teams = await Team.find();
@@ -38,10 +39,34 @@ router.post("/", async (req, res, next) => {
       message: "League not found",
     });
   }
+
+  const stadiums = await Stadium.count({ _id: { $in: req.body.stadiums } });
+
+  if (req.body.stadiums.length > stadiums) {
+    return res.status(404).json({
+      message: "Stadium doesnt exists",
+    });
+  }
+  let daysFromRequest = [];
+
+  if (req.body.playDateTime?.length > 0) {
+    daysFromRequest = req.body.playDateTime?.map((d) => d.day);
+  }
+  const days = await Day.count({ _id: { $in: daysFromRequest } });
+
+  if (days < daysFromRequest?.length) {
+    return res.status(404).json({
+      message: "Day doesnt exists",
+    });
+  }
+
   const team = await new Team({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     league: league,
+    playDateTime: req.body.playDateTime,
+    notes: req.body.notes,
+    stadiums: req.body.stadiums,
   });
   team
     .save()
