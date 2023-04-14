@@ -9,6 +9,7 @@ const leagueRoutes = require("./api/routes/leagues");
 const teamRoutes = require("./api/routes/teams");
 const seasonRoutes = require("./api/routes/seasons");
 const dayRoutes = require("./api/routes/days");
+const matchesRoutes = require("./api/routes/matches");
 const cors = require("cors");
 
 console.log(process.env.mongooseURI);
@@ -48,12 +49,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/user", userRoutes);
-app.use("/league", leagueRoutes);
-app.use("/team", teamRoutes);
-app.use("/stadium", stadiumRoutes);
-app.use("/season", seasonRoutes);
-app.use("/day", dayRoutes);
+app.use("/users", userRoutes);
+app.use("/leagues", leagueRoutes);
+app.use("/teams", teamRoutes);
+app.use("/stadiums", stadiumRoutes);
+app.use("/seasons", seasonRoutes);
+app.use("/days", dayRoutes);
+app.use("/matches", matchesRoutes);
 
 app.use((req, res, next) => {
   res.status(200).json({
