@@ -5,6 +5,7 @@ const teamSchema = mongoose.Schema({
   name: { type: String, required: true },
   league: { type: mongoose.Schema.Types.ObjectId, ref: "League" },
   stadiums: [{ type: mongoose.Schema.Types.ObjectId, ref: "Stadium" }],
+  seasons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Season" }],
   playDateTime: [
     {
       type: {

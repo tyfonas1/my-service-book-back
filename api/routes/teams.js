@@ -6,6 +6,7 @@ const validateStadium = require("../middleware/validateStadium");
 const Team = require("../models/team");
 const Leagues = require("../models/league");
 const Stadium = require("../models/stadium");
+const Season = require("../models/season");
 const Day = require("../models/days");
 
 router.get("/", async (req, res, next) => {
@@ -22,6 +23,12 @@ router.get("/:_id", [validateId], async (req, res, next) => {
   return res.status(200).json({ data: team });
 });
 
+router.get("/:seasonId", [validateId], async (req, res, next) => {
+  if (!team) {
+    return res.status(404).json({ message: "Team not found" });
+  }
+  return res.status(200).json({ data: team });
+});
 router.post("/", async (req, res, next) => {
   if (!req.body.name) {
     return res.status(404).json({
@@ -47,6 +54,18 @@ router.post("/", async (req, res, next) => {
       message: "Stadium doesnt exists",
     });
   }
+  let seasons
+  if(req.body.seasons?.length > 0 ){
+
+     seasons = await Season.count({ _id: { $in: req.body.seasons } });
+    if (req.body.seasons.length > seasons) {
+      return res.status(404).json({
+        message: "Season doesnt exists",
+      });
+    }
+  }
+
+
   let daysFromRequest = [];
 
   if (req.body.playDateTime?.length > 0) {
@@ -67,6 +86,7 @@ router.post("/", async (req, res, next) => {
     playDateTime: req.body.playDateTime,
     notes: req.body.notes,
     stadiums: req.body.stadiums,
+    seasons: req.body.seasons || []
   });
   team
     .save()
@@ -98,10 +118,29 @@ router.put("/:_id", [validateId, validateStadium], async (req, res, next) => {
       message: "League not found",
     });
   }
+
+  const stadiums = await Stadium.count({ _id: { $in: req.body.stadiums } });
+
+  if (req.body.stadiums.length > stadiums) {
+    return res.status(404).json({
+      message: "Stadium doesnt exists",
+    });
+  }
+  let seasons
+  if(req.body.seasons?.length > 0 ){
+
+    seasons = await Season.count({ _id: { $in: req.body.seasons } });
+    if (req.body.seasons.length > seasons) {
+      return res.status(404).json({
+        message: "Season doesnt exists",
+      });
+    }
+  }
   console.log("ok");
   team.name = req.body.name || team.name;
   team.league = req.body.league || team.league;
   team.stadiums = req.body.stadiums || team.stadiums;
+  team.seasons = req.body.seasons || team.seasons;
 
   team
     .save()
