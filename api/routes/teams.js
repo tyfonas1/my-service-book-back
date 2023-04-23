@@ -10,7 +10,7 @@ const Season = require("../models/season");
 const Day = require("../models/days");
 
 router.get("/", async (req, res, next) => {
-  const teams = await Team.find();
+  const teams = await Team.find().populate('league').populate('stadiums').populate('seasons');
   return res.status(200).json({ data: teams });
 });
 
