@@ -14,20 +14,21 @@ router.get("/", async (req, res, next) => {
   return res.status(200).json({ data: teams });
 });
 
-router.get("/:_id", [validateId], async (req, res, next) => {
+router.get("/team/:_id", [validateId], async (req, res, next) => {
   const team = await Team.findOne({ _id: req.params._id });
 
   if (!team) {
-    return res.status(404).json({ message: "Team not found" });
+    return res.status(404).json({ message: "Team not found2" });
   }
   return res.status(200).json({ data: team });
 });
 
-router.get("/:seasonId", [validateId], async (req, res, next) => {
-  if (!team) {
-    return res.status(404).json({ message: "Team not found" });
+router.get("/season/:_id", [validateId], async (req, res, next) => {
+  const teams = await Team.find({seasons: req.params._id}).populate('league').populate('stadiums').populate('seasons');
+  if (!teams) {
+    return res.status(404).json({ message: "Team not found1" });
   }
-  return res.status(200).json({ data: team });
+  return res.status(200).json({ data: teams });
 });
 router.post("/", async (req, res, next) => {
   if (!req.body.name) {
@@ -66,18 +67,18 @@ router.post("/", async (req, res, next) => {
   }
 
 
-  let daysFromRequest = [];
-
-  if (req.body.playDateTime?.length > 0) {
-    daysFromRequest = req.body.playDateTime?.map((d) => d.day);
-  }
-  const days = await Day.count({ _id: { $in: daysFromRequest } });
-
-  if (days < daysFromRequest?.length) {
-    return res.status(404).json({
-      message: "Day doesnt exists",
-    });
-  }
+  // let daysFromRequest = [];
+  //
+  // if (req.body.playDateTime?.length > 0) {
+  //   daysFromRequest = req.body.playDateTime?.map((d) => d.day);
+  // }
+  // const days = await Day.count({ _id: { $in: daysFromRequest } });
+  //
+  // if (days < daysFromRequest?.length) {
+  //   return res.status(404).json({
+  //     message: "Day doesnt exists",
+  //   });
+  // }
 
   const team = await new Team({
     _id: new mongoose.Types.ObjectId(),
