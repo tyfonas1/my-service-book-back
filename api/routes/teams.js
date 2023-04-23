@@ -24,9 +24,19 @@ router.get("/team/:_id", [validateId], async (req, res, next) => {
 });
 
 router.get("/season/:_id", [validateId], async (req, res, next) => {
+  let seasons
+  if(req.body.seasons?.length > 0 ){
+
+    seasons = await Season.count({ _id: { $in: req.body.seasons } });
+    if (req.body.seasons.length > seasons) {
+      return res.status(404).json({
+        message: "Season doesnt exists",
+      });
+    }
+  }
   const teams = await Team.find({seasons: req.params._id}).populate('league').populate('stadiums').populate('seasons');
   if (!teams) {
-    return res.status(404).json({ message: "Team not found1" });
+    return res.status(404).json({ message: "Team not found" });
   }
   return res.status(200).json({ data: teams });
 });
@@ -105,7 +115,7 @@ router.post("/", async (req, res, next) => {
     });
 });
 
-router.put("/:_id", [validateId, validateStadium], async (req, res, next) => {
+router.put("/:_id", [validateId], async (req, res, next) => {
   const team = await Team.findOne({ _id: req.params._id });
   if (!team) {
     return res.status(404).json({
