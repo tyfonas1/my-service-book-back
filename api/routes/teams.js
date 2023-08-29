@@ -25,6 +25,8 @@ router.get("/team/:_id", [validateId], async (req, res, next) => {
 
 router.get("/season/:_id", [validateId], async (req, res, next) => {
   let seasons
+
+
   if(req.body.seasons?.length > 0 ){
 
     seasons = await Season.count({ _id: { $in: req.body.seasons } });
@@ -35,10 +37,24 @@ router.get("/season/:_id", [validateId], async (req, res, next) => {
     }
   }
   const teams = await Team.find({seasons: req.params._id}).populate('league').populate('stadiums').populate('seasons');
+
+
   if (!teams) {
     return res.status(404).json({ message: "Team not found" });
   }
-  return res.status(200).json({ data: teams });
+
+  if(req.query.all){
+
+    return res.status(200).json({ data: teams });
+  }
+  const leagues = await Leagues.find();
+  const leaguesWithTeams = await Promise.all(
+      leagues.map(async (league) => {
+        const teamsInLeague = await Team.find({ seasons: req.params._id,league }).populate('league').populate('stadiums').populate('seasons');
+        return { league, teams: teamsInLeague };
+      })
+  );
+  return res.status(200).json({ data: leaguesWithTeams });
 });
 router.post("/", async (req, res, next) => {
   if (!req.body.name) {
@@ -147,7 +163,6 @@ router.put("/:_id", [validateId], async (req, res, next) => {
       });
     }
   }
-  console.log("ok");
   team.name = req.body.name || team.name;
   team.league = req.body.league || team.league;
   team.stadiums = req.body.stadiums || team.stadiums;

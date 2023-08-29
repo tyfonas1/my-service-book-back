@@ -7,7 +7,7 @@ const { isValidObjectId } = require("mongoose");
 const validateId = require("../middleware/validateId");
 const Team = require("../models/team");
 
-router.get("/", async (req, res, next) => {
+router.get("/", async (req, res) => {
   const league = await Leagues.find();
   return res.status(200).json({ data: league });
 });

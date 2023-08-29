@@ -18,6 +18,7 @@ router.post("/", async (req, res, next) => {
   const stadium = await new Stadium({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
+    hours: req.body.hours
   });
   stadium
     .save()
@@ -53,6 +54,7 @@ router.put("/:_id", [validateId], async (req, res, next) => {
     });
   }
   stadium.name = req.body.name || stadium.name;
+  stadium.hours = req.body.hours || stadium.hours;
 
   stadium
     .save()

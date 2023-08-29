@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
 router.post("/signup", (req, res, next) => {
-  console.log(req.body.email);
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
       return res.status(500).json({
@@ -36,7 +35,6 @@ router.post("/signup", (req, res, next) => {
 });
 
 router.post("/login", (req, res, next) => {
-  console.log("IN");
   User.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -45,9 +43,7 @@ router.post("/login", (req, res, next) => {
           message: "User not found",
         });
       }
-      console.log("IN2");
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-        console.log('in3',result);
         if (err) {
           return res.status(401).json({ message: "Auth failed" });
         }
@@ -57,7 +53,6 @@ router.post("/login", (req, res, next) => {
           return res.status(404).json({ message: "Wrong username or password" });
         }
       });
-      console.log('in3');
     })
     .catch((err)=> console.log(err));
 });
