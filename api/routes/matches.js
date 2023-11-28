@@ -70,9 +70,15 @@ router.get("/:seasonId", async (req, res, next) => {
     if(!req.params.seasonId){
         return res.status(404).json({ message: 'Season is not selected' });
     }
-
-
-    return res.status(200).json(matches);
+    const data = await populateAllMatches(matches[0])
+    console.log(data?.leagueMatches[0]?.matches[0][0])
+    return populateAllMatches(matches[0])
+        .then((populatedData) => {
+            res.status(200).json(populatedData);
+        })
+        .catch((error) => {
+            res.status(500).send(error.message);
+        });
 });
 
 router.get("/:seasonId/:leagueId", async (req, res, next) => {
@@ -109,4 +115,37 @@ router.get("/:seasonId/:leagueId", async (req, res, next) => {
     return res.status(200).json(data);
 });
 
+
 module.exports = router;
+
+
+async function populateTeams(match) {
+    for (let i = 0; i < match.length; i++) {
+        const round = match[i];
+        for (let j = 0; j < round.length; j++) {
+            const game = round[j];
+            match[i][j] = await Team.find({ _id: { $in: game } });
+
+        }
+    }
+    return match;
+}
+
+// Function to populate team IDs for all matches
+async function populateAllMatches(data) {
+    for (let i = 0; i < data.leagueMatches.length; i++) {
+        const leagueMatch = data.leagueMatches[i];
+        data.leagueMatches[i] = await Match.populate(leagueMatch, {
+            path: 'matches',
+            populate: {
+                path: 'teamIds',
+                model: 'Team'
+            }
+        });
+
+        // Further populate the nested structure
+        data.leagueMatches[i].matches = await populateTeams(data.leagueMatches[i].matches);
+    }
+
+    return data;
+}

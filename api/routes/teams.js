@@ -167,7 +167,7 @@ router.put("/:_id", [validateId], async (req, res, next) => {
   team.league = req.body.league || team.league;
   team.stadiums = req.body.stadiums || team.stadiums;
   team.seasons = req.body.seasons || team.seasons;
-
+  team.playDateTime = req.body.playDateTime;
   team
     .save()
     .then((result) =>

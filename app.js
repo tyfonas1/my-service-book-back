@@ -59,7 +59,7 @@ app.use("/matches", matchesRoutes);
 
 app.use((req, res, next) => {
   res.status(200).json({
-    message: "It works!2",
+    message: "Up and running",
   });
 });
 console.log("run");

@@ -18,7 +18,7 @@ router.post("/", async (req, res, next) => {
   const stadium = await new Stadium({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    hours: req.body.hours
+    daysAndHours: req.body.daysAndHours
   });
   stadium
     .save()
