@@ -2,19 +2,17 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const validateId = require("../middleware/validateId");
-const validateStadium = require("../middleware/validateStadium");
 const Team = require("../models/team");
 const Leagues = require("../models/league");
 const Stadium = require("../models/stadium");
 const Season = require("../models/season");
-const Day = require("../models/days");
 
-router.get("/", async (req, res, next) => {
+router.get("/", async (req, res, ) => {
   const teams = await Team.find().populate('league').populate('stadiums').populate('seasons');
   return res.status(200).json({ data: teams });
 });
 
-router.get("/team/:_id", [validateId], async (req, res, next) => {
+router.get("/team/:_id", [validateId], async (req, res, ) => {
   const team = await Team.findOne({ _id: req.params._id });
 
   if (!team) {
@@ -23,7 +21,7 @@ router.get("/team/:_id", [validateId], async (req, res, next) => {
   return res.status(200).json({ data: team });
 });
 
-router.get("/season/:_id", [validateId], async (req, res, next) => {
+router.get("/season/:_id", [validateId], async (req, res, ) => {
   let seasons
 
 
@@ -56,7 +54,7 @@ router.get("/season/:_id", [validateId], async (req, res, next) => {
   );
   return res.status(200).json({ data: leaguesWithTeams });
 });
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res, ) => {
   if (!req.body.name) {
     return res.status(404).json({
       message: "Please add a name",
@@ -131,7 +129,7 @@ router.post("/", async (req, res, next) => {
     });
 });
 
-router.put("/:_id", [validateId], async (req, res, next) => {
+router.put("/:_id", [validateId], async (req, res, ) => {
   const team = await Team.findOne({ _id: req.params._id });
   if (!team) {
     return res.status(404).json({
@@ -184,7 +182,7 @@ router.put("/:_id", [validateId], async (req, res, next) => {
     });
 });
 
-router.delete("/:_id", [validateId], async (req, res, next) => {
+router.delete("/:_id", [validateId], async (req, res, ) => {
   const team = await Team.find({ _id: req.params._id });
   if (!team) {
     return res.status(404).json({

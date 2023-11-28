@@ -4,12 +4,12 @@ const mongoose = require("mongoose");
 const validateId = require("../middleware/validateId");
 const Stadium = require("../models/stadium");
 
-router.get("/", async (req, res, next) => {
+router.get("/", async (req, res, ) => {
   const stadiums = await Stadium.find();
   return res.status(200).json({ data: stadiums });
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res, ) => {
   if (!req.body.name) {
     return res.status(404).json({
       message: "Please add a name",
@@ -36,7 +36,7 @@ router.post("/", async (req, res, next) => {
     });
 });
 
-router.get("/:_id", [validateId], async (req, res, next) => {
+router.get("/:_id", [validateId], async (req, res, ) => {
   const stadium = await Stadium.findOne({ _id: req.params._id });
   if (!stadium) {
     return res.status(404).json({
@@ -46,7 +46,7 @@ router.get("/:_id", [validateId], async (req, res, next) => {
   return res.status(200).json({ data: stadium });
 });
 
-router.put("/:_id", [validateId], async (req, res, next) => {
+router.put("/:_id", [validateId], async (req, res, ) => {
   const stadium = await Stadium.findOne({ _id: req.params._id });
   if (!stadium) {
     return res.status(404).json({
@@ -72,7 +72,7 @@ router.put("/:_id", [validateId], async (req, res, next) => {
     });
 });
 
-router.delete("/:_id", [validateId], async (req, res, next) => {
+router.delete("/:_id", [validateId], async (req, res, ) => {
   const stadium = await Stadium.find({ _id: req.params._id });
   if (!stadium) {
     return res.status(404).json({

@@ -5,7 +5,7 @@ const Leagues = require("../models/league");
 const Match = require("../models/matches");
 const mongoose = require("mongoose");
 
-router.post("/:seasonId", async (req, res, next) => {
+router.post("/:seasonId", async (req, res, ) => {
     const matches = await Match.find({season: req.params.seasonId})
 
     if(matches?.length > 0){
@@ -61,7 +61,7 @@ router.post("/:seasonId", async (req, res, next) => {
     return res.status(200).json({ message: 'Matches has been saved successfully' });
 });
 
-router.get("/:seasonId", async (req, res, next) => {
+router.get("/:seasonId", async (req, res, ) => {
     const matches = await Match.find({season: req.params.seasonId})
 
     if(matches?.length < 1){
@@ -81,7 +81,7 @@ router.get("/:seasonId", async (req, res, next) => {
         });
 });
 
-router.get("/:seasonId/:leagueId", async (req, res, next) => {
+router.get("/:seasonId/:leagueId", async (req, res, ) => {
     const matches = await Match.findOne({season: req.params.seasonId})
 
     if(matches?.length < 1){
@@ -98,16 +98,13 @@ router.get("/:seasonId/:leagueId", async (req, res, next) => {
     let leagueMatches = matches?.leagueMatches?.find((mat)=> mat?.league?.toString() === req.params.leagueId)
 
     leagueMatches = leagueMatches?.matches?.map(async (l) => {
-        const weekResults = await Promise.all(l?.map(async (week) => {
-            const matchResults = await Promise.all(week?.map(async (match) => {
+        return await Promise.all(l?.map(async (week) => {
+            return await Promise.all(week?.map(async (match) => {
                 const team1 = await Team.findOne({_id: match}).populate();
                 console.log('in2', team1);
                 return team1;
             }));
-            return matchResults;
         }));
-
-        return weekResults;
     });
 
     const data = { league: league, leagueMatches: await Promise.all(leagueMatches) };

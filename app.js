@@ -10,7 +10,6 @@ const teamRoutes = require("./api/routes/teams");
 const seasonRoutes = require("./api/routes/seasons");
 const dayRoutes = require("./api/routes/days");
 const matchesRoutes = require("./api/routes/matches");
-const cors = require("cors");
 
 console.log(process.env.mongooseURI);
 mongoose.connect(process.env.mongooseURI);
@@ -57,7 +56,7 @@ app.use("/seasons", seasonRoutes);
 app.use("/days", dayRoutes);
 app.use("/matches", matchesRoutes);
 
-app.use((req, res, next) => {
+app.use((req, res, ) => {
   res.status(200).json({
     message: "Up and running",
   });
