@@ -121,7 +121,7 @@ router.delete("/:seasonId", [validateId], async (req, res, ) => {
             message: "There are no saved matches in this season",
         });
     }
-    await Match.deleteOne({ _id: req.params.seasonId });
+    await Match.deleteOne({ season: req.params.seasonId });
     return res.send({ message: "Season matches deleted" });
 });
 
