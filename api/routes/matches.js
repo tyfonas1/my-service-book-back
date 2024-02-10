@@ -4,6 +4,8 @@ const Team = require("../models/team");
 const Leagues = require("../models/league");
 const Match = require("../models/matches");
 const mongoose = require("mongoose");
+const validateId = require("../middleware/validateId");
+const Stadium = require("../models/stadium");
 
 router.post("/:seasonId", async (req, res, ) => {
     const matches = await Match.find({season: req.params.seasonId})
@@ -110,6 +112,17 @@ router.get("/:seasonId/:leagueId", async (req, res, ) => {
     const data = { league: league, leagueMatches: await Promise.all(leagueMatches) };
 
     return res.status(200).json(data);
+});
+
+router.delete("/:seasonId", [validateId], async (req, res, ) => {
+    const matches = await Match.findOne({season: req.params.seasonId})
+    if (!matches) {
+        return res.status(404).json({
+            message: "There are no saved matches in this season",
+        });
+    }
+    await Match.deleteOne({ _id: req.params.seasonId });
+    return res.send({ message: "Season matches deleted" });
 });
 
 
