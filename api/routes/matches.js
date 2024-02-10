@@ -114,15 +114,15 @@ router.get("/:seasonId/:leagueId", async (req, res, ) => {
     return res.status(200).json(data);
 });
 
-router.delete("/:seasonId", [validateId], async (req, res, ) => {
+router.delete("/:seasonId", async (req, res, ) => {
     const matches = await Match.findOne({season: req.params.seasonId})
     if (!matches) {
         return res.status(404).json({
             message: "There are no saved matches in this season",
         });
     }
-    await Match.deleteOne({ season: req.params.seasonId });
-    return res.send({ message: "Season matches deleted ... ",matches });
+    await Match.deleteOne({season: req.params.seasonId})
+    return res.send({ message: "Season matches deleted" });
 });
 
 
